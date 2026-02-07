@@ -1,0 +1,7 @@
+{
+  "name": "VoterField Backend",
+  "description": "Backend for Voterfield",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}

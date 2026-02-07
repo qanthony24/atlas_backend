@@ -1,0 +1,49 @@
+{
+  "name": "voterfield-backend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "backend:start": "tsx backend/server.ts",
+    "backend:dev": "tsx watch backend/server.ts",
+    "worker:start": "tsx backend/worker.ts",
+    "worker:dev": "tsx watch backend/worker.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.875.0",
+    "@heroicons/react": "^2.2.0",
+    "bcryptjs": "^3.0.2",
+    "bullmq": "^5.58.5",
+    "cors": "^2.8.5",
+    "express": "^5.2.1",
+    "ioredis": "^5.7.0",
+    "js-yaml": "^4.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.2",
+    "pg": "^8.16.3",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-router-dom": "^7.13.0",
+    "swagger-client": "^3.24.3",
+    "swagger-ui-react": "^5.31.0"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/multer": "^1.4.12",
+    "@types/node": "^22.14.0",
+    "@types/supertest": "^6.0.3",
+    "@vitejs/plugin-react": "^5.0.0",
+    "pg-mem": "^3.0.5",
+    "supertest": "^7.1.4",
+    "tsx": "^4.20.5",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0",
+    "vitest": "^4.0.18"
+  }
+}
