@@ -1,17 +1,21 @@
-import { S3Client, CreateBucketCommand, HeadBucketCommand, PutObjectCommand, GetObjectCommand } from '@aws-sdk/client-s3';
-import { config } from './config';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { config } from "./config";
 
-export const createS3Client = () => {
-    return new S3Client({
-        endpoint: config.s3Endpoint,
-        region: config.s3Region,
-        credentials: {
-            accessKeyId: config.s3AccessKey,
-            secretAccessKey: config.s3SecretKey
-        },
-        forcePathStyle: config.s3ForcePathStyle
-    });
-};
+export function createS3Client() {
+  if (!process.env.S3_ACCESS_KEY_ID || !process.env.S3_SECRET_ACCESS_KEY) {
+    throw new Error("Missing S3 credentials");
+  }
+
+  return new S3Client({
+    endpoint: process.env.S3_ENDPOINT,
+    region: process.env.S3_REGION || "auto",
+    forcePathStyle: true,
+    credentials: {
+      accessKeyId: process.env.S3_ACCESS_KEY_ID,
+      secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+    },
+  });
+}
 
 export const ensureBucket = async (client: S3Client, bucket: string) => {
     try {
