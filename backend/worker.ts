@@ -10,8 +10,7 @@ const startWorker = async () => {
     await runSchema(pool);
 
     const connection = createQueueConnection();
-    const s3Client = createS3Client();
-    await ensureBucket(s3Client, config.s3Bucket);
+
 
     const worker = new Worker(
         'import_voters',
