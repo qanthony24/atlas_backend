@@ -8,24 +8,21 @@ declare const require: any;
 declare const module: any;
 
 const start = async () => {
-    const pool = getPool();
-    await runSchema(pool);
+  const pool = getPool();
+  await runSchema(pool);
 
-    const connection = createQueueConnection();
-    const importQueue = createImportQueue(connection);
-    const s3Client = createS3Client();
-    await ensureBucket(s3Client, config.s3Bucket);
+  const connection = createQueueConnection();
+  const importQueue = createImportQueue(connection);
 
-    const app = createApp({ pool, importQueue, s3Client });
+  const s3Client = createS3Client();
+  await ensureBucket(s3Client, config.s3Bucket);
 
-    app.listen(config.port, () => {
-        console.log(`VoterField Backend running on port ${config.port}`);
-    });
+  const app = createApp({ pool, importQueue, s3Client });
+
+  // Railway sets PORT. Fall back to config.port for local dev.
+  const port = Number(process.env.PORT ?? config.port ?? 3000);
+
+  app.listen(port, "0.0.0.0", () => {
+    console.log(`VoterField Backend running on port ${port}`);
+  });
 };
-
-if (require.main === module) {
-    start().catch(err => {
-        console.error('Server failed to start', err);
-        process.exit(1);
-    });
-}
