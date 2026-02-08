@@ -621,6 +621,12 @@ export const createApp = ({ pool, importQueue, s3Client }: AppDependencies) => {
         res.json(result.rows.map(mapOrg));
     });
 
+    app.get("/health", (_req, res) => res.status(200).send("ok"));
+app.get("/ready", async (_req, res) => {
+  // Optional: do lightweight checks here if you want
+  res.status(200).send("ready");
+});
+
     app.get('/api/v1/internal/organizations/:id/health', requireInternal, async (req, res) => {
         const org = await pool.query('SELECT * FROM organizations WHERE id = $1', [req.params.id]);
         if (!org.rows[0]) return res.status(404).json({ error: 'Org not found' });
