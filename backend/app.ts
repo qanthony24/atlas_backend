@@ -19,6 +19,44 @@ interface AppDependencies {
     importQueue: ImportQueue;
     s3Client: any;
 }
+import path from "node:path";
+import fs from "node:fs";
+
+export function createApp({ pool, importQueue, s3Client }: Deps) {
+  const app = express();
+
+  // 1) Health
+  app.get("/health", (_req, res) => res.status(200).send("ok"));
+
+  // 2) Readiness (keep it simple first)
+  app.get("/ready", async (_req, res) => {
+    try {
+      await pool.query("select 1");
+      // Redis/BullMQ: a lightweight ping depends on your connection wrapper
+      // If you can't ping easily, omit for now and add later.
+      res.status(200).json({ ok: true, db: true });
+    } catch (e) {
+      res.status(503).json({ ok: false, db: false });
+    }
+  });
+
+  // 3) Serve OpenAPI YAML explicitly (DO NOT let static fallback handle this)
+  app.get("/openapi.yaml", (_req, res) => {
+    const specPath = path.resolve(process.cwd(), "openapi.yaml");
+    // If your file is not at repo root, adjust the path:
+    // path.resolve(process.cwd(), "backend", "openapi.yaml")
+    const yaml = fs.readFileSync(specPath, "utf8");
+    res.type("text/yaml").status(200).send(yaml);
+  });
+
+  // ... your existing middleware + API routes here ...
+
+  // IMPORTANT: Any static hosting / SPA fallback MUST go at the end:
+  // app.use(express.static(...))
+  // app.get("*", (_, res) => res.sendFile(index.html))
+
+  return app;
+}
 
 const mapUser = (row: any) => ({
     id: row.id,
