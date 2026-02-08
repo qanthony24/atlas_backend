@@ -1,3 +1,4 @@
+import { runPreflight } from "./preflight";
 import { Worker } from 'bullmq';
 import { createQueueConnection } from './queue';
 import { getPool, runSchema } from './db';
@@ -6,6 +7,7 @@ import { processImportJob } from './jobs/importVoters';
 import { config } from './config';
 
 const startWorker = async () => {
+    await runPreflight();
     const pool = getPool();
     await runSchema(pool);
 
