@@ -1,3 +1,4 @@
+import { runPreflight } from "./preflight";
 import { createApp } from './app';
 import { config } from './config';
 import { getPool, runSchema } from './db';
@@ -8,6 +9,7 @@ declare const require: any;
 declare const module: any;
 
 const start = async () => {
+  await runPreflight();
   const pool = getPool();
   await runSchema(pool);
 
