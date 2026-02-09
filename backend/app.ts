@@ -126,18 +126,25 @@ export const createApp = ({ pool, importQueue, s3Client }: AppDependencies) => {
   // Serve OpenAPI spec (raw YAML) so Swagger/Developer Portal doesn't get HTML.
 app.get('/openapi.yaml', (_req, res) => {
   try {
+    // Try a few likely locations depending on how Railway builds/launches the app.
     const candidates = [
       path.resolve(process.cwd(), 'openapi.yaml'),
       path.resolve(process.cwd(), 'backend', 'openapi.yaml'),
+      path.resolve(__dirname, '..', 'openapi.yaml'),
+      path.resolve(__dirname, 'openapi.yaml'),
     ];
 
     const specPath = candidates.find((p) => fs.existsSync(p));
+
     if (!specPath) {
-      return res.status(404).send('openapi.yaml not found');
+      return res.status(404).json({
+        error: 'openapi.yaml not found',
+        tried: candidates,
+      });
     }
 
     const yaml = fs.readFileSync(specPath, 'utf8');
-    res.type('text/yaml').status(200).send(yaml);
+    res.status(200).type('text/yaml').send(yaml);
   } catch (err: any) {
     res.status(500).json({
       error: 'Failed to load openapi.yaml',
@@ -145,6 +152,7 @@ app.get('/openapi.yaml', (_req, res) => {
     });
   }
 });
+
 
 
     // Auth (public)
