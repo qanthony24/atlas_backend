@@ -6,8 +6,8 @@ import crypto from 'crypto';
 import multer from 'multer';
 import { Pool } from 'pg';
 import IORedis from 'ioredis';
-import path from "node:path";
-import fs from "node:fs";
+import fs from "fs";
+import path from "path";
 
 import { authMiddleware, requireAdmin, requireInternal } from './middleware/auth';
 import { config } from './config';
