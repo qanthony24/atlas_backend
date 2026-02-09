@@ -123,13 +123,17 @@ export const createApp = ({ pool, importQueue, s3Client }: AppDependencies) => {
         }
     });
 
-    // Serve OpenAPI spec (raw YAML) so Swagger/Developer Portal doesn't get HTML.
+  // Serve OpenAPI spec (raw YAML) so Swagger/Developer Portal doesn't get HTML.
 app.get('/openapi.yaml', (_req, res) => {
   try {
-    const specPath = path.resolve(process.cwd(), 'openapi.yaml');
+    const candidates = [
+      path.resolve(process.cwd(), 'openapi.yaml'),
+      path.resolve(process.cwd(), 'backend', 'openapi.yaml'),
+    ];
 
-    if (!fs.existsSync(specPath)) {
-      return res.status(404).send('openapi.yaml not found at repo root');
+    const specPath = candidates.find((p) => fs.existsSync(p));
+    if (!specPath) {
+      return res.status(404).send('openapi.yaml not found');
     }
 
     const yaml = fs.readFileSync(specPath, 'utf8');
@@ -141,6 +145,7 @@ app.get('/openapi.yaml', (_req, res) => {
     });
   }
 });
+
 
     // Auth (public)
     app.post('/api/v1/auth/login', async (req, res) => {
