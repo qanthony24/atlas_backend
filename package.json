@@ -12,6 +12,9 @@
     "worker:start": "tsx backend/worker.ts",
     "worker:dev": "tsx watch backend/worker.ts",
     "test": "vitest run"
+    "start": "tsx backend/server.ts",
+"worker": "tsx backend/worker.ts"
+
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.875.0",
